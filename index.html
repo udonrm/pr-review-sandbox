@@ -1,34 +1,112 @@
 <!DOCTYPE html>
 <html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TODO App</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <div class="container">
-    <h1>TODO List</h1>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TODO App Pro</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header class="header">
+        <h1>TODO List Pro</h1>
+        <button
+          id="theme-toggle"
+          class="theme-toggle"
+          aria-label="テーマ切り替え"
+        >
+          <span class="theme-icon">🌙</span>
+        </button>
+      </header>
 
-    <div class="input-section">
-      <input type="text" id="todo-input" placeholder="新しいタスクを入力...">
-      <button id="add-btn">追加</button>
+      <div class="input-section">
+        <div class="input-row">
+          <input
+            type="text"
+            id="todo-input"
+            placeholder="新しいタスクを入力..."
+          />
+          <button id="add-btn">追加</button>
+        </div>
+        <div class="input-options">
+          <select id="priority-select">
+            <option value="low">低優先度</option>
+            <option value="medium" selected>中優先度</option>
+            <option value="high">高優先度</option>
+          </select>
+          <input type="date" id="due-date" />
+          <select id="category-select">
+            <option value="">カテゴリなし</option>
+            <option value="work">仕事</option>
+            <option value="personal">プライベート</option>
+            <option value="shopping">買い物</option>
+            <option value="health">健康</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="category-tabs">
+        <button class="category-tab active" data-category="all">すべて</button>
+        <button class="category-tab" data-category="work">仕事</button>
+        <button class="category-tab" data-category="personal">
+          プライベート
+        </button>
+        <button class="category-tab" data-category="shopping">買い物</button>
+        <button class="category-tab" data-category="health">健康</button>
+      </div>
+
+      <div class="filter-section">
+        <button class="filter-btn active" data-filter="all">すべて</button>
+        <button class="filter-btn" data-filter="active">未完了</button>
+        <button class="filter-btn" data-filter="completed">完了</button>
+      </div>
+
+      <div class="sort-section">
+        <label>並び替え:</label>
+        <select id="sort-select">
+          <option value="created">作成日</option>
+          <option value="priority">優先度</option>
+          <option value="dueDate">期限</option>
+          <option value="alphabetical">名前順</option>
+        </select>
+      </div>
+
+      <ul id="todo-list"></ul>
+
+      <div class="stats">
+        <span id="todo-count">0 件のタスク</span>
+        <div class="stats-actions">
+          <button id="export-btn">エクスポート</button>
+          <button id="clear-completed">完了済みを削除</button>
+        </div>
+      </div>
     </div>
 
-    <div class="filter-section">
-      <button class="filter-btn active" data-filter="all">すべて</button>
-      <button class="filter-btn" data-filter="active">未完了</button>
-      <button class="filter-btn" data-filter="completed">完了</button>
+    <div id="edit-modal" class="modal">
+      <div class="modal-content">
+        <h2>タスクを編集</h2>
+        <input type="text" id="edit-input" placeholder="タスク名" />
+        <select id="edit-priority">
+          <option value="low">低優先度</option>
+          <option value="medium">中優先度</option>
+          <option value="high">高優先度</option>
+        </select>
+        <input type="date" id="edit-due-date" />
+        <select id="edit-category">
+          <option value="">カテゴリなし</option>
+          <option value="work">仕事</option>
+          <option value="personal">プライベート</option>
+          <option value="shopping">買い物</option>
+          <option value="health">健康</option>
+        </select>
+        <textarea id="edit-notes" placeholder="メモ（任意）"></textarea>
+        <div class="modal-actions">
+          <button id="edit-cancel">キャンセル</button>
+          <button id="edit-save">保存</button>
+        </div>
+      </div>
     </div>
 
-    <ul id="todo-list"></ul>
-
-    <div class="stats">
-      <span id="todo-count">0 件のタスク</span>
-      <button id="clear-completed">完了済みを削除</button>
-    </div>
-  </div>
-
-  <script src="app.js"></script>
-</body>
+    <script src="app.js"></script>
+  </body>
 </html>
