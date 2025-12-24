@@ -12,6 +12,8 @@ const categorySelect = document.getElementById("category-select");
 const sortSelect = document.getElementById("sort-select");
 const themeToggle = document.getElementById("theme-toggle");
 const exportBtn = document.getElementById("export-btn");
+const searchInput = document.getElementById("search-input");
+const searchClearBtn = document.getElementById("search-clear-btn");
 
 // モーダル要素
 const editModal = document.getElementById("edit-modal");
@@ -29,6 +31,7 @@ let currentFilter = "all";
 let currentCategory = "all";
 let currentSort = "created";
 let editingTodoId = null;
+let searchQuery = "";
 
 // テーマの初期化
 const savedTheme = localStorage.getItem("theme") || "light";
@@ -156,6 +159,16 @@ function clearCompleted() {
 function filterTodos() {
   let filtered = todos;
 
+  // 検索フィルター（タイトルとメモの両方を検索）
+  if (searchQuery) {
+    const query = searchQuery.toLowerCase();
+    filtered = filtered.filter((todo) => {
+      const textMatch = todo.text.toLowerCase().includes(query);
+      const notesMatch = todo.notes && todo.notes.toLowerCase().includes(query);
+      return textMatch || notesMatch;
+    });
+  }
+
   // カテゴリフィルター
   if (currentCategory !== "all") {
     filtered = filtered.filter((todo) => todo.category === currentCategory);
@@ -245,7 +258,7 @@ function renderTodos() {
             todo.completed ? "checked" : ""
           }>
           <div class="todo-content">
-            <span class="todo-text">${escapeHtml(todo.text)}</span>
+            <span class="todo-text">${highlightSearchText(todo.text)}</span>
             <div class="todo-meta">
               <span class="todo-priority">優先度: ${
                 priorityNames[todo.priority]
@@ -287,6 +300,29 @@ function escapeHtml(text) {
   const div = document.createElement("div");
   div.textContent = text;
   return div.innerHTML;
+}
+
+// 検索結果のハイライト
+function highlightSearchText(text) {
+  if (!searchQuery) return escapeHtml(text);
+
+  const escaped = escapeHtml(text);
+  const query = searchQuery.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const regex = new RegExp(`(${query})`, "gi");
+  return escaped.replace(regex, '<span class="search-highlight">$1</span>');
+}
+
+// 検索クリアボタンの表示切り替え
+function updateSearchClearButton() {
+  searchClearBtn.style.display = searchQuery ? "block" : "none";
+}
+
+// 検索をクリア
+function clearSearch() {
+  searchQuery = "";
+  searchInput.value = "";
+  updateSearchClearButton();
+  renderTodos();
 }
 
 // テーマの切り替え
@@ -372,6 +408,15 @@ themeToggle.addEventListener("click", toggleTheme);
 clearCompletedBtn.addEventListener("click", clearCompleted);
 
 exportBtn.addEventListener("click", exportTodos);
+
+// 検索イベント
+searchInput.addEventListener("input", (e) => {
+  searchQuery = e.target.value.trim();
+  updateSearchClearButton();
+  renderTodos();
+});
+
+searchClearBtn.addEventListener("click", clearSearch);
 
 // モーダルイベント
 editCancel.addEventListener("click", closeEditModal);
